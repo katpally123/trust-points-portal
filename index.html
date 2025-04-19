@@ -1,9 +1,48 @@
-<h2>Vouch for a Number</h2>
-<form id="vouchForm">
-  <input placeholder="Phone Number (e.g. +91XXXXXXXXXX)" id="phone" required>
-  <input placeholder="Comment (optional)" id="comment">
-  <button type="submit">Submit</button>
-</form>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Trust Points Portal</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    input, button {
+      padding: 8px;
+      margin-right: 5px;
+      margin-top: 10px;
+    }
+    #trustBoard div {
+      margin: 10px 0;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: #f9f9f9;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+    }
+    .comment {
+      color: gray;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Vouch for a Number</h2>
+  <form id="vouchForm">
+    <input placeholder="Phone Number (e.g. +91XXXXXXXXXX)" id="phone" required>
+    <input placeholder="Comment (optional)" id="comment">
+    <button type="submit">Submit</button>
+  </form>
 
-<h2>Trust Board</h2>
-<div id="trustBoard"></div>
+  <h2>Trust Board</h2>
+  <div id="trustBoard"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
