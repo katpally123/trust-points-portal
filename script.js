@@ -1,57 +1,56 @@
-let transactions = [];
 let trustScores = {};
-let trustSources = {}; // who gave points to whom
+let comments = {};
 
-document.getElementById("transactionForm").addEventListener("submit", function(e) {
+document.getElementById("vouchForm").addEventListener("submit", function(e) {
   e.preventDefault();
-  const sender = sender.value.trim();
-  const receiver = receiver.value.trim();
-  const cad = parseFloat(document.getElementById("cad").value);
-  const inr = parseFloat(document.getElementById("inr").value);
-  const date = document.getElementById("date").value;
+  const phone = document.getElementById("phone").value.trim();
+  const comment = document.getElementById("comment").value.trim();
 
-  trustScores[sender] = (trustScores[sender] || 0) + 10;
-  trustScores[receiver] = (trustScores[receiver] || 0) + 10;
+  trustScores[phone] = (trustScores[phone] || 0) + 1;
+  comments[phone] = comments[phone] || [];
+  if (comment) comments[phone].push(comment);
 
-  trustSources[receiver] = trustSources[receiver] || [];
-  trustSources[sender] = trustSources[sender] || [];
-
-  trustSources[receiver].push(sender);
-  trustSources[sender].push(receiver);
-
-  transactions.push({ sender, receiver, cad, inr, date });
-  renderTrustScores();
+  renderTrustBoard();
   this.reset();
 });
 
-function renderTrustScores() {
+function renderTrustBoard() {
   const board = document.getElementById("trustBoard");
   board.innerHTML = "";
 
-  for (let user in trustScores) {
+  for (let phone in trustScores) {
     const wrapper = document.createElement("div");
-    wrapper.style.marginBottom = "10px";
+    wrapper.style.margin = "10px 0";
+    wrapper.style.padding = "10px";
+    wrapper.style.border = "1px solid #ccc";
+    wrapper.style.borderRadius = "5px";
+    wrapper.style.background = "#f9f9f9";
 
-    const toggle = document.createElement("div");
-    toggle.innerHTML = `<strong>${user}</strong>: ${trustScores[user]} points`;
-    toggle.style.cursor = "pointer";
-    toggle.style.display = "flex";
-    toggle.style.justifyContent = "space-between";
+    const row = document.createElement("div");
+    row.style.display = "flex";
+    row.style.justifyContent = "space-between";
 
-    const dropdown = document.createElement("div");
-    dropdown.style.display = "none";
-    dropdown.style.paddingLeft = "15px";
-    dropdown.style.color = "gray";
+    const phoneLabel = document.createElement("span");
+    phoneLabel.textContent = phone;
+    phoneLabel.style.fontWeight = "bold";
 
-    let givers = trustSources[user] || [];
-    dropdown.innerHTML = givers.map(g => `+10 from ${g}`).join("<br>");
+    const scoreLabel = document.createElement("span");
+    scoreLabel.textContent = `${trustScores[phone]} pts`;
 
-    toggle.onclick = () => {
-      dropdown.style.display = dropdown.style.display === "none" ? "block" : "none";
-    };
+    row.appendChild(phoneLabel);
+    row.appendChild(scoreLabel);
+    wrapper.appendChild(row);
 
-    wrapper.appendChild(toggle);
-    wrapper.appendChild(dropdown);
+    const commentBlock = document.createElement("div");
+    commentBlock.style.marginTop = "5px";
+    commentBlock.style.color = "gray";
+    comments[phone].forEach(c => {
+      const p = document.createElement("p");
+      p.textContent = `– ${c}`;
+      commentBlock.appendChild(p);
+    });
+
+    wrapper.appendChild(commentBlock);
     board.appendChild(wrapper);
   }
 }
