@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Trust Points Portal</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h2>Log a Transaction</h2>
+  <form id="transactionForm">
+    <input placeholder="Sender Name" id="sender" required>
+    <input placeholder="Receiver Name" id="receiver" required>
+    <input type="number" placeholder="Amount in CAD" id="cad" required>
+    <input type="number" placeholder="Amount Received (INR)" id="inr" required>
+    <input type="date" id="date" required>
+    <button type="submit">Submit</button>
+  </form>
+
+  <h2>Trust Scores</h2>
+  <div id="trustBoard"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
