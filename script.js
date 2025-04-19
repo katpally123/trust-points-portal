@@ -6,6 +6,8 @@ document.getElementById("vouchForm").addEventListener("submit", function(e) {
   const phone = document.getElementById("phone").value.trim();
   const comment = document.getElementById("comment").value.trim();
 
+  if (!phone) return;
+
   trustScores[phone] = (trustScores[phone] || 0) + 1;
   comments[phone] = comments[phone] || [];
   if (comment) comments[phone].push(comment);
@@ -20,15 +22,9 @@ function renderTrustBoard() {
 
   for (let phone in trustScores) {
     const wrapper = document.createElement("div");
-    wrapper.style.margin = "10px 0";
-    wrapper.style.padding = "10px";
-    wrapper.style.border = "1px solid #ccc";
-    wrapper.style.borderRadius = "5px";
-    wrapper.style.background = "#f9f9f9";
 
     const row = document.createElement("div");
-    row.style.display = "flex";
-    row.style.justifyContent = "space-between";
+    row.className = "row";
 
     const phoneLabel = document.createElement("span");
     phoneLabel.textContent = phone;
@@ -42,8 +38,7 @@ function renderTrustBoard() {
     wrapper.appendChild(row);
 
     const commentBlock = document.createElement("div");
-    commentBlock.style.marginTop = "5px";
-    commentBlock.style.color = "gray";
+    commentBlock.className = "comment";
     comments[phone].forEach(c => {
       const p = document.createElement("p");
       p.textContent = `– ${c}`;
