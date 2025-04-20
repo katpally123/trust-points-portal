@@ -55,6 +55,6 @@ function renderTrustBoard(snapshot) {
   }
 }
 
-// Load data from Firebase and listen for updates
 db.ref("trust").on("value", renderTrustBoard);
+
 
