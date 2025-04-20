@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Trust Points Test Portal</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      max-width: 700px;
+      margin: auto;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    form {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    input[type="text"] {
+      padding: 8px;
+      width: 230px;
+    }
+    button {
+      padding: 8px 16px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .comments {
+      font-size: 0.9em;
+      color: #666;
+      margin-top: 5px;
+    }
+    .note {
+      text-align: center;
+      font-size: 0.9em;
+      color: #555;
+      margin-top: 30px;
+    }
+    .home-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #007BFF;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Trust Points — Test Environment</h1>
+  <p style="text-align: center; color: #444;">
+    This is a testing space to simulate how the Trust Board will work.<br/>
+    Add phone numbers and comments to see how the interface reacts. <br/>
+    <strong>Note:</strong> This data is not stored — refreshing the page will clear everything.
+  </p>
+
+  <form id="testForm">
+    <input type="text" id="testPhone" placeholder="Phone Number (e.g. +91XX)" required />
+    <input type="text" id="testComment" placeholder="Comment (optional)" />
+    <button type="submit">Submit</button>
+  </form>
+
+  <h2>Test Board</h2>
+  <ul id="testBoard"></ul>
+
+  <p class="note">
+    ⚠️ Use this only to try out the interface. To vouch for a number officially, go to the main portal.
+  </p>
+  
+  <a href="index.html" class="home-link">🔙 Return to TrustPoints Home</a>
+
+  <script>
+    const form = document.getElementById("testForm");
+    const phoneInput = document.getElementById("testPhone");
+    const commentInput = document.getElementById("testComment");
+    const testBoard = document.getElementById("testBoard");
+
+    const testData = {};
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const number = phoneInput.value.trim();
+      const comment = commentInput.value.trim();
+
+      if (!number) return;
+
+      if (!testData[number]) {
+        testData[number] = [];
+      }
+      testData[number].push(comment || "");
+
+      phoneInput.value = "";
+      commentInput.value = "";
+      renderBoard();
+    });
+
+    function renderBoard() {
+      testBoard.innerHTML = "";
+      Object.entries(testData).forEach(([number, comments]) => {
+        const count = comments.length;
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <div>
+            <strong>${number}</strong> (${count} Trust Point${count > 1 ? "s" : ""})
+            ${comments.some(c => c) ? `<div class="comments">Vouched by: ${comments.filter(c => c).join(", ")}</div>` : ""}
+          </div>
+        `;
+        testBoard.appendChild(li);
+      });
+    }
+  </script>
+
+</body>
+</html>
