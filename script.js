@@ -2,13 +2,18 @@ const phoneInput = document.getElementById("phone");
 const commentInput = document.getElementById("comment");
 const board = document.getElementById("trustBoard");
 
+// 🔍 Confirm it's working
+console.log("Script loaded");
+
 document.getElementById("vouchForm").addEventListener("submit", function(e) {
   e.preventDefault();
   const phone = phoneInput.value.trim();
   const comment = commentInput.value.trim();
   if (!phone) return;
 
-  const ref = db.ref("trust/" + phone);
+  console.log("Form submitted", phone, comment);
+
+  const ref = firebase.database().ref("trust/" + phone);
   ref.once("value").then(snapshot => {
     const data = snapshot.val() || { score: 0, comments: [] };
     data.score += 1;
@@ -55,6 +60,8 @@ function renderTrustBoard(snapshot) {
   }
 }
 
-db.ref("trust").on("value", renderTrustBoard);
+// ✅ Listen for updates from Firebase
+firebase.database().ref("trust").on("value", renderTrustBoard);
+
 
 
