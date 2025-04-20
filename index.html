@@ -1,15 +1,68 @@
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyA4g0UIpX9IdlfoIuHunq-O-wuTunreVes",
-    authDomain: "trust-board.firebaseapp.com",
-    databaseURL: "https://trust-board-default-rtdb.firebaseio.com",
-    projectId: "trust-board",
-    storageBucket: "trust-board.appspot.com",
-    messagingSenderId: "776839427024",
-    appId: "1:776839427024:web:247c8b7520381f91ddbfd5"
-  };
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Trust Points Portal</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    input, button {
+      padding: 8px;
+      margin-right: 5px;
+      margin-top: 10px;
+    }
+    #trustBoard div {
+      margin: 10px 0;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: #f9f9f9;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+    }
+    .comment {
+      color: gray;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Vouch for a Number</h2>
+  <form id="vouchForm">
+    <input placeholder="Phone Number (e.g. +91XXXXXXXXXX)" id="phone" required>
+    <input placeholder="Comment (optional)" id="comment">
+    <button type="submit">Submit</button>
+  </form>
 
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-</script>
+  <h2>Trust Board</h2>
+  <div id="trustBoard"></div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyA4g0UIpX9IdlfoIuHunq-O-wuTunreVes",
+      authDomain: "trust-board.firebaseapp.com",
+      databaseURL: "https://trust-board-default-rtdb.firebaseio.com",
+      projectId: "trust-board",
+      storageBucket: "trust-board.appspot.com",
+      messagingSenderId: "776839427024",
+      appId: "1:776839427024:web:247c8b7520381f91ddbfd5"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+  </script>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
 
