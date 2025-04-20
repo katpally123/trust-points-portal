@@ -1,26 +1,31 @@
-let trustScores = {};
-let comments = {};
+const phoneInput = document.getElementById("phone");
+const commentInput = document.getElementById("comment");
+const board = document.getElementById("trustBoard");
 
 document.getElementById("vouchForm").addEventListener("submit", function(e) {
   e.preventDefault();
-  const phone = document.getElementById("phone").value.trim();
-  const comment = document.getElementById("comment").value.trim();
-
+  const phone = phoneInput.value.trim();
+  const comment = commentInput.value.trim();
   if (!phone) return;
 
-  trustScores[phone] = (trustScores[phone] || 0) + 1;
-  comments[phone] = comments[phone] || [];
-  if (comment) comments[phone].push(comment);
+  const ref = db.ref("trust/" + phone);
+  ref.once("value").then(snapshot => {
+    const data = snapshot.val() || { score: 0, comments: [] };
+    data.score += 1;
+    if (comment) data.comments.push(comment);
+    ref.set(data);
+  });
 
-  renderTrustBoard();
-  this.reset();
+  phoneInput.value = "";
+  commentInput.value = "";
 });
 
-function renderTrustBoard() {
-  const board = document.getElementById("trustBoard");
+function renderTrustBoard(snapshot) {
+  const data = snapshot.val() || {};
   board.innerHTML = "";
 
-  for (let phone in trustScores) {
+  for (let phone in data) {
+    const entry = data[phone];
     const wrapper = document.createElement("div");
 
     const row = document.createElement("div");
@@ -31,7 +36,7 @@ function renderTrustBoard() {
     phoneLabel.style.fontWeight = "bold";
 
     const scoreLabel = document.createElement("span");
-    scoreLabel.textContent = `${trustScores[phone]} pts`;
+    scoreLabel.textContent = `${entry.score} pts`;
 
     row.appendChild(phoneLabel);
     row.appendChild(scoreLabel);
@@ -39,7 +44,7 @@ function renderTrustBoard() {
 
     const commentBlock = document.createElement("div");
     commentBlock.className = "comment";
-    comments[phone].forEach(c => {
+    (entry.comments || []).forEach(c => {
       const p = document.createElement("p");
       p.textContent = `– ${c}`;
       commentBlock.appendChild(p);
@@ -49,3 +54,7 @@ function renderTrustBoard() {
     board.appendChild(wrapper);
   }
 }
+
+// Load data from Firebase and listen for updates
+db.ref("trust").on("value", renderTrustBoard);
+
