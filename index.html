@@ -41,14 +41,25 @@
     li {
       padding: 10px 0;
       border-bottom: 1px solid #eee;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
     }
     .comments {
       font-size: 0.9em;
       color: #666;
       margin-top: 5px;
+    }
+    .footer-note {
+      text-align: center;
+      font-size: 0.9em;
+      color: #555;
+      margin-top: 40px;
+    }
+    .test-link {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .test-link a {
+      color: #007BFF;
+      text-decoration: none;
     }
   </style>
 </head>
@@ -56,7 +67,8 @@
 
   <h1>Trust Points Portal</h1>
   <p class="description">
-    This platform allows group members to vouch for numbers they’ve interacted with. The more trust points a number has, the more reliable it is considered by the community.
+    This platform allows group members to vouch for numbers they’ve interacted with. <br/>
+    The more trust points a number has, the more reliable it is considered by the community.
   </p>
 
   <h2>Vouch for a Number</h2>
@@ -70,8 +82,12 @@
   <h2>Trust Board</h2>
   <ul id="trustBoard"></ul>
 
-  <p style="text-align: center; font-size: 0.9em; color: #555; margin-top: 40px;">
+  <p class="footer-note">
     ⚠️ If you ever have a bad experience with a number, please post in the group to help keep everyone informed and safe.
+  </p>
+
+  <p class="test-link">
+    🧪 Want to try it out first? <a href="test.html">Go to Test Page</a>
   </p>
 
   <script type="module">
@@ -100,9 +116,7 @@
       e.preventDefault();
       const number = phoneInput.value.trim();
       const comment = commentInput.value.trim();
-
-      if (number === "") return;
-
+      if (!number) return;
       push(ref(db, "trust/" + number), { comment });
       phoneInput.value = "";
       commentInput.value = "";
@@ -130,6 +144,7 @@
 
 </body>
 </html>
+
 
 
 
