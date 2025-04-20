@@ -34,6 +34,13 @@
     button {
       padding: 8px 16px;
     }
+    #searchInput {
+      display: block;
+      margin: 20px auto 30px auto;
+      padding: 10px;
+      width: 80%;
+      font-size: 16px;
+    }
     ul {
       list-style: none;
       padding: 0;
@@ -74,10 +81,12 @@
   <h2>Vouch for a Number</h2>
 
   <form id="vouchForm">
-    <input type="text" id="phoneInput" placeholder="Phone Number (e.g. +91XX)" required />
+    <input type="text" id="phoneInput" placeholder="Phone Number (e.g. +1 519-318-9636)" required />
     <input type="text" id="commentInput" placeholder="Comment (optional)" />
     <button type="submit">Submit</button>
   </form>
+
+  <input type="text" id="searchInput" placeholder="🔍 Search by phone number..." />
 
   <h2>Trust Board</h2>
   <ul id="trustBoard"></ul>
@@ -111,22 +120,50 @@
     const phoneInput = document.getElementById("phoneInput");
     const commentInput = document.getElementById("commentInput");
     const trustBoard = document.getElementById("trustBoard");
+    const searchInput = document.getElementById("searchInput");
+
+    let allData = {};
 
     form.addEventListener("submit", (e) => {
       e.preventDefault();
-      const number = phoneInput.value.trim();
+
+      let number = phoneInput.value.replace(/\D/g, '');
+      number = number.slice(-10); // Get last 10 digits
       const comment = commentInput.value.trim();
-      if (!number) return;
+
+      if (number.length !== 10) {
+        alert("Please enter a valid 10-digit phone number.");
+        return;
+      }
+
+      const vouched = JSON.parse(localStorage.getItem("vouchedNumbers") || "{}");
+      if (vouched[number]) {
+        alert("You have already vouched for this number.");
+        return;
+      }
+
       push(ref(db, "trust/" + number), { comment });
+      vouched[number] = true;
+      localStorage.setItem("vouchedNumbers", JSON.stringify(vouched));
+
       phoneInput.value = "";
       commentInput.value = "";
     });
 
     onValue(ref(db, "trust"), (snapshot) => {
-      const data = snapshot.val() || {};
+      allData = snapshot.val() || {};
+      renderBoard();
+    });
+
+    searchInput.addEventListener("input", renderBoard);
+
+    function renderBoard() {
+      const filter = searchInput.value.toLowerCase();
       trustBoard.innerHTML = "";
 
-      Object.entries(data).forEach(([number, entries]) => {
+      Object.entries(allData).forEach(([number, entries]) => {
+        if (!number.toLowerCase().includes(filter)) return;
+
         const comments = Object.values(entries || {}).map(entry => entry.comment).filter(Boolean);
         const count = Object.keys(entries).length;
 
@@ -139,11 +176,12 @@
         `;
         trustBoard.appendChild(li);
       });
-    });
+    }
   </script>
 
 </body>
 </html>
+
 
 
 
