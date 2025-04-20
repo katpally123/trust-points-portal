@@ -1,63 +1,72 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Trust Points Portal</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 20px;
+      padding: 40px;
       max-width: 700px;
       margin: auto;
     }
-    h1, h2 {
+    h1 {
       text-align: center;
     }
-    p {
-      text-align: center;
-      color: #555;
+    form {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+      gap: 10px;
+      flex-wrap: wrap;
     }
-    input, button {
+    input[type="text"] {
       padding: 8px;
-      margin-right: 5px;
-      margin-top: 10px;
+      width: 230px;
     }
-    #trustBoard div {
-      margin: 10px 0;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      background: #f9f9f9;
+    button {
+      padding: 8px 16px;
     }
-    .row {
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
       display: flex;
       justify-content: space-between;
+      align-items: center;
     }
-    .comment {
-      color: gray;
+    .comments {
+      font-size: 0.9em;
+      color: #666;
       margin-top: 5px;
     }
   </style>
 </head>
 <body>
-  <h1>📱 Trust Points Portal</h1>
-  <p>This page is created for our community to vouch for each other on money transfers.  
-     Every time someone successfully completes a transaction, the sender can vouch for the receiver.  
-     The more trust points a number has, the safer it is to transact with them.</p>
 
-  <h2>Vouch for a Number</h2>
+  <h1>Vouch for a Number</h1>
+
   <form id="vouchForm">
-    <input placeholder="Phone Number (e.g. +91XXXXXXXXXX)" id="phone" required>
-    <input placeholder="Comment (optional)" id="comment">
+    <input type="text" id="phoneInput" placeholder="Phone Number (e.g. +91XX)" required />
+    <input type="text" id="commentInput" placeholder="Comment (optional)" />
     <button type="submit">Submit</button>
   </form>
 
   <h2>Trust Board</h2>
-  <div id="trustBoard"></div>
+  <ul id="trustBoard"></ul>
 
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+  <p style="text-align: center; font-size: 0.9em; color: #555; margin-top: 40px;">
+    ⚠️ If you ever have a bad experience with a number, please post in the group to help keep everyone informed and safe.
+  </p>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+
     const firebaseConfig = {
       apiKey: "AIzaSyA4g0UIpX9IdlfoIuHunq-O-wuTunreVes",
       authDomain: "trust-board.firebaseapp.com",
@@ -68,13 +77,51 @@
       appId: "1:776839427024:web:247c8b7520381f91ddbfd5"
     };
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const form = document.getElementById("vouchForm");
+    const phoneInput = document.getElementById("phoneInput");
+    const commentInput = document.getElementById("commentInput");
+    const trustBoard = document.getElementById("trustBoard");
+
+    const votes = {};
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const number = phoneInput.value.trim();
+      const comment = commentInput.value.trim();
+
+      if (number === "") return;
+
+      push(ref(db, "trust/" + number), { comment });
+      phoneInput.value = "";
+      commentInput.value = "";
+    });
+
+    onValue(ref(db, "trust"), (snapshot) => {
+      const data = snapshot.val() || {};
+      trustBoard.innerHTML = "";
+
+      Object.entries(data).forEach(([number, entries]) => {
+        const comments = Object.values(entries || {}).map(entry => entry.comment).filter(Boolean);
+        const count = Object.keys(entries).length;
+
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <div>
+            <strong>${number}</strong> (${count} Trust Point${count > 1 ? 's' : ''})
+            ${comments.length ? `<div class="comments">Vouched by: ${comments.join(", ")}</div>` : ""}
+          </div>
+        `;
+        trustBoard.appendChild(li);
+      });
+    });
   </script>
 
-  <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
