@@ -11,8 +11,14 @@
       max-width: 700px;
       margin: auto;
     }
-    h1 {
+    h1, h2 {
       text-align: center;
+    }
+    p.description {
+      text-align: center;
+      color: #444;
+      font-size: 1rem;
+      margin-bottom: 30px;
     }
     form {
       display: flex;
@@ -48,7 +54,12 @@
 </head>
 <body>
 
-  <h1>Vouch for a Number</h1>
+  <h1>Trust Points Portal</h1>
+  <p class="description">
+    This platform allows group members to vouch for numbers they’ve interacted with. The more trust points a number has, the more reliable it is considered by the community.
+  </p>
+
+  <h2>Vouch for a Number</h2>
 
   <form id="vouchForm">
     <input type="text" id="phoneInput" placeholder="Phone Number (e.g. +91XX)" required />
@@ -85,8 +96,6 @@
     const commentInput = document.getElementById("commentInput");
     const trustBoard = document.getElementById("trustBoard");
 
-    const votes = {};
-
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       const number = phoneInput.value.trim();
@@ -121,6 +130,7 @@
 
 </body>
 </html>
+
 
 
 
